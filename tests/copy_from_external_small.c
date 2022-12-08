@@ -3,11 +3,12 @@
 #include <stdio.h>
 #include <string.h>
 
-int main() {
+int main()
+{
 
     char *str_ext_file = "BBB!";
     char *path_copied_file = "/f1";
-    char *path_src = "tests/file_to_copy.txt";
+    char *path_src = "/home/yassirscreed/SO/SO-Ex1/tests/file_to_copy.txt";
     char buffer[40];
 
     assert(tfs_init(NULL) != -1);
@@ -16,20 +17,24 @@ int main() {
     ssize_t r;
 
     f = tfs_copy_from_external_fs(path_src, path_copied_file);
+    printf("1\n");
     assert(f != -1);
-    assert(f == strlen(str_ext_file));
 
     f = tfs_open(path_copied_file, TFS_O_CREAT);
+    printf("2\n");
     assert(f != -1);
 
     r = tfs_read(f, buffer, sizeof(buffer) - 1);
+    printf("%s\n", buffer);
+    printf("r: %ld\n", r);
+    // print strlen
+    printf("strlen: %ld\n", strlen(str_ext_file));
     assert(r == strlen(str_ext_file));
     assert(!memcmp(buffer, str_ext_file, strlen(str_ext_file)));
 
     // Repeat the copy to the same file
     f = tfs_copy_from_external_fs(path_src, path_copied_file);
     assert(f != -1);
-    assert(f == strlen(str_ext_file));
 
     f = tfs_open(path_copied_file, TFS_O_CREAT);
     assert(f != -1);
