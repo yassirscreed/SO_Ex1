@@ -3,8 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 
-int main()
-{
+int main() {
 
     char *str_ext_file =
         "BBB! BBB! BBB! BBB! BBB! BBB! BBB! BBB! BBB! BBB! BBB! BBB! BBB! BBB! "
@@ -16,7 +15,7 @@ int main()
         "BBB! BBB! BBB! BBB! BBB! BBB! BBB! BBB! BBB! BBB! BBB! BBB! BBB! BBB! "
         "BBB! BBB! BBB! BBB! BBB! ";
     char *path_copied_file = "/f1";
-    char *path_src = "/home/yassirscreed/SO/SO-Ex1/tests/file_to_copy_over512.txt";
+    char *path_src = "/Users/yassir/Desktop/Faculdade/SO/SO-Ex1/tests/file_to_copy_over512.txt";
     char buffer[600];
 
     assert(tfs_init(NULL) != -1);

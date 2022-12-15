@@ -291,35 +291,33 @@ int tfs_copy_from_external_fs(char const *source_path, char const *dest_path)
     // variables. TODO: remove
     if (!valid_pathname(source_path))
     {
-        printf("oops1\n");
         return -1;
     }
 
     FILE *fd = fopen(source_path, "r");
     if (fd == NULL)
     {
-        printf("oops2\n");
+        return -1;
     }
     printf("done\n");
 
     int fd2 = tfs_open(dest_path, TFS_O_CREAT);
     if (fd2 == -1)
     {
-        printf("oops2\n");
         return -1;
     }
 
-    printf("done\n");
 
     size_t size = 1024;
     char buffer[size];
 
-    if (fread(buffer, 1, size, fd) == 0)
+    size_t bytes_read = fread(buffer, 1, size, fd);
+    if (bytes_read == 0)
     {
         return -1;
     }
 
-    if (tfs_write(fd2, buffer, size) == -1)
+    if (tfs_write(fd2, buffer, bytes_read) == -1)
     {
         return -1;
     }
