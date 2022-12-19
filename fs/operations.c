@@ -100,24 +100,24 @@ int tfs_open(char const *name, tfs_file_mode_t mode)
     size_t offset;
 
     if (inum >= 0)
-    {   
-        
+    {
+
         // The file already exists
         inode_t *inode = inode_get(inum);
         ALWAYS_ASSERT(inode != NULL,
                       "tfs_open: directory files must have an inode");
-        
-        if(inode->i_hardlink_counter == 0){
+
+        if (inode->i_hardlink_counter == 0)
+        {
             int fhandle;
             size_t size = 1024;
             char buffer[size];
-            memset(buffer,0,sizeof(buffer));
+            memset(buffer, 0, sizeof(buffer));
             offset = 0;
             fhandle = add_to_open_file_table(inum, offset);
-            tfs_read(fhandle,buffer,size);
+            tfs_read(fhandle, buffer, size);
             tfs_close(fhandle);
-            return tfs_open(buffer,mode);
-
+            return tfs_open(buffer, mode);
         }
         // Truncate (if requested)
         if (mode & TFS_O_TRUNC)
@@ -162,8 +162,6 @@ int tfs_open(char const *name, tfs_file_mode_t mode)
         return -1;
     }
 
-    
-
     // Finally, add entry to the open file table and return the corresponding
     // handle
     return add_to_open_file_table(inum, offset);
@@ -175,18 +173,18 @@ int tfs_open(char const *name, tfs_file_mode_t mode)
 
 int tfs_sym_link(char const *target, char const *link_name)
 {
-    int link_inumber,fhandle;
-    inode_t *link_inode,*root_dir_inode = inode_get(ROOT_DIR_INUM);
-    if(!valid_pathname(target))
+    int link_inumber, fhandle;
+    inode_t *link_inode, *root_dir_inode = inode_get(ROOT_DIR_INUM);
+    if (!valid_pathname(target))
         return -1;
-    if((link_inumber = inode_create(T_FILE)) == -1)
+    if ((link_inumber = inode_create(T_FILE)) == -1)
         return -1;
     link_inode = inode_get(link_inumber);
-    if(add_dir_entry(root_dir_inode, link_name + 1 , link_inumber) == -1)
+    if (add_dir_entry(root_dir_inode, link_name + 1, link_inumber) == -1)
         return -1;
-    if((fhandle = tfs_open(link_name,TFS_O_TRUNC)) ==-1)
+    if ((fhandle = tfs_open(link_name, TFS_O_TRUNC)) == -1)
         return -1;
-    if(tfs_write(fhandle,target,strlen(target))== -1)
+    if (tfs_write(fhandle, target, strlen(target)) == -1)
         return -1;
     tfs_close(fhandle);
     link_inode->i_hardlink_counter = 0;
@@ -196,16 +194,16 @@ int tfs_sym_link(char const *target, char const *link_name)
 
 int tfs_link(char const *target, char const *link_name)
 {
-    inode_t *target_inode,*root_dir_inode = inode_get(ROOT_DIR_INUM);
-    int target_inumber = tfs_lookup(target,root_dir_inode);
-    if(target_inumber == -1)
+    inode_t *target_inode, *root_dir_inode = inode_get(ROOT_DIR_INUM);
+    int target_inumber = tfs_lookup(target, root_dir_inode);
+    if (target_inumber == -1)
         return -1;
     target_inode = inode_get(target_inumber);
     if (target_inode->i_hardlink_counter == 0)
         return -1;
-    if(add_dir_entry(root_dir_inode, link_name + 1 , target_inumber) == -1)
+    if (add_dir_entry(root_dir_inode, link_name + 1, target_inumber) == -1)
         return -1;
-    target_inode->i_hardlink_counter +=1;
+    target_inode->i_hardlink_counter += 1;
     return 0;
     PANIC("TODO: tfs_link");
 }
@@ -308,18 +306,20 @@ ssize_t tfs_read(int fhandle, void *buffer, size_t len)
 
 int tfs_unlink(char const *target)
 {
-    inode_t *inode,*root_dir_inode = inode_get(ROOT_DIR_INUM);
+    inode_t *inode, *root_dir_inode = inode_get(ROOT_DIR_INUM);
     int inumber;
     if (!valid_pathname(target))
         return -1;
-    inumber = tfs_lookup(target,root_dir_inode);
+    inumber = tfs_lookup(target, root_dir_inode);
     inode = inode_get(inumber);
-    if(clear_dir_entry(root_dir_inode,target+1) == -1)
-            return -1;
-    if(inode->i_hardlink_counter == 0){//if is softlink
+    if (clear_dir_entry(root_dir_inode, target + 1) == -1)
+        return -1;
+    if (inode->i_hardlink_counter == 0)
+    { // if is softlink
         inode_delete(inumber);
     }
-    else if(--inode->i_hardlink_counter == 0){
+    else if (--inode->i_hardlink_counter == 0)
+    {
         inode_delete(inumber);
     }
     return 0;
@@ -327,9 +327,10 @@ int tfs_unlink(char const *target)
 
 int tfs_copy_from_external_fs(char const *source_path, char const *dest_path)
 {
-    FILE *fd=fopen(source_path, "r");
-    if (fd == NULL){
-      return -1;
+    FILE *fd = fopen(source_path, "r");
+    if (fd == NULL)
+    {
+        return -1;
     }
     int fd2 = tfs_open(dest_path, TFS_O_CREAT);
 
