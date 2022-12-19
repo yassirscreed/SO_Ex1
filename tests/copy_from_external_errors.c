@@ -15,7 +15,7 @@ int main() {
     assert(tfs_close(f1) != -1);
 
     // Scenario 1: source file does not exist
-    assert(tfs_copy_from_external_fs("./Users/yassir/Desktop/Faculdade/SO/SO-Ex1/tests/unexistent", path1) == -1);
+    assert(tfs_copy_from_external_fs("./unexistent", path1) == -1);
 
     // TODO: add more failure scenarios
 
