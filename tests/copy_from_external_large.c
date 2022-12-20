@@ -3,7 +3,8 @@
 #include <stdio.h>
 #include <string.h>
 
-int main() {
+int main()
+{
 
     char *str_ext_file =
         "BBB! BBB! BBB! BBB! BBB! BBB! BBB! BBB! BBB! BBB! BBB! BBB! BBB! BBB! "
